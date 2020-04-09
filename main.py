@@ -34,16 +34,12 @@ def Report():
         details = request.form
         firstName = details['fname']
         lastName = details['lname']
+
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO Employee(firstName, lastName) VALUES (%s, %s)", (firstName, lastName))
+        cur.execute("INSERT INTO Employee(firstName, lastName) VALUES (%s, %s)" %(firstName, lastName))
         mysql.connection.commit()
         cur.close()
-        return 'success'
 	return render_template('Report.html')
-
-
-
-
 
 if __name__=='__main:
 	app.run(debug=true)
