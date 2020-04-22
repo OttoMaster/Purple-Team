@@ -1,15 +1,27 @@
+"""
+Author:                     Jai Behl
+Date Created:               April 2nd, 2020
+Project:                    Fedrated Insurance Salary Charter
+Content:                    Database Gateway
+Database Engine:            MySQL
+Programming Language:       Python
+"""
 #importing sql connector
 import mysql.connector
+from mysql.connector import (connection)
 
-class Database:
-#initiliazing the class
-	def __init__(self):
-		self.__user = 'root'
-		self.__password = 'root!1234'
-		self.__host = 'localhost'
-		self.__schema = 'FedratedInsurance'
-#function establish connection
-	def createConnection(host,password,username):
-		db = mysql.connector.connect(self.__user,self.__password,self.__username,'FedratedInsurance')
+# function to connect to database
+def Database():
+	config = {
+		'user': 'root',
+		'password': 'root12345!',
+		'host': 'localhost',
+		'database':'Fedrated_Insurance',
+		'raise_on_warnings': True
+	}
+	cnx = mysql.connector.connect(**config)
+	return cnx
 
+Test = Database()
+print(Test)
 
