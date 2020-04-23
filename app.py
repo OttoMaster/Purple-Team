@@ -12,8 +12,9 @@ from flask import url_for,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.automap import automap_base
 from flask_marshmallow import Marshmallow
-from form import PerformanceReview
+from form import PerformanceReview,login
 import os
+
 #init application
 app = Flask(__name__)
 #setting secret key
@@ -26,6 +27,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(basedir,'db.sq
 db = SQLAlchemy(app)
 #init marshmallow
 ma = Marshmallow(app)
+
 #review class model
 class ReviewDB(db.Model):
     id     = db.Column(db.Integer,primary_key = True)
@@ -49,23 +51,32 @@ class ReviewDB(db.Model):
         self.leadership = leadership
         self.result =result
         self.performance_feedback = performance_feedback
+
 #Employee Schema
 class Schema(ma.Schema):
     class Meta:
-        fields  = ['id','f_name','l_name','job','administration','professionalaccountability',
-                   'motivation','leadership','result','performance_feedback']
+        fields  = ['id','f_name','l_name',
+                   'job','administration',
+                   'professionalaccountability',
+                   'motivation','leadership',
+                   'result',
+                   'performance_feedback']
+
 #init Schema
 Review_Schema = Schema()
 Reviews_Schema = Schema(many = True)
+
 #route to home page
 @app.route('/')
 def home():
     return render_template('homepage.html')
+
 #route to about page
 @app.route('/About')
 def about():
     form = login()
     return render_template('about page.html',form =form)
+
 #route to form page
 @app.route('/review',methods = ['GET','POST'])
 def performancereview():
@@ -93,10 +104,14 @@ def performancereview():
             flash(f"Review Submited for {form.first_name.data}!", "Success")
             return jsonify(test)
     return render_template('performancereview.html',form = form)
-
+#login page
 @app.route('/Employee',methods = ['GET'])
 def emp_all():
-    return 'Hello World'
+    all_review = ReviewDB.query.all()
+    result = Reviews_Schema.dump(all_review)
+    return jsonify(result)
+
+
 #run server
 if __name__ == '__main__':
     app.run(debug =True)
